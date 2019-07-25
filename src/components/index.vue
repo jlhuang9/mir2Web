@@ -157,11 +157,11 @@
 
 <style scoped>
 
-  .tTable {
+  #index >>> .tTable {
     margin: 0 auto;
     font-family: 宋体;
     width: 1013px;
-    font-size: 9pt;
+    font-size: 8pt;
     color: rgb(0, 0, 0);
     text-align: center;
   }
@@ -215,5 +215,8 @@
   .header-mar-font {
     font-family: 微软雅黑;
     color: blue;
+  }
+  .el-table >>> td {
+    padding: 3px 0;
   }
 </style>
