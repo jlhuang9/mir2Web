@@ -2,9 +2,7 @@
   <div id="play">
     <el-form label-width="100px">
       <el-form-item label="皇后数量：">
-        <el-input
-          v-model="size"
-          type='number'></el-input>
+        <el-input v-model="size"></el-input>
       </el-form-item>
       <el-form-item label="目标次数：">
         <el-input v-model="count"></el-input>
@@ -19,7 +17,7 @@
     <div style="float: left">
       <div class="row" v-for="x in parseInt(size)">
         <div class="model" v-for="y in parseInt(size)">
-          <div class="piece" v-if="process(x,y)">
+          <div :class="cssPiece()" v-if="process(x,y)">
           </div>
         </div>
       </div>
@@ -43,7 +41,7 @@
         </el-table-column>
       </el-table>
     </div>
-    </div>
+  </div>
 </template>
 
 <script>
@@ -55,7 +53,8 @@
         pieces: [],
         count: 0,
         calcnow: 0,
-        log: []
+        log: [],
+        tempNow: 0
       }
     },
     watch: {
@@ -70,10 +69,18 @@
       this.count = -1;
       this.init();
       this.count = 0;
-      this.calcnow = 0;
     },
     methods: {
+      cssPiece() {
+        debugger;
+        if (this.judageNotError(this.tempNow, this.pieces)) {
+          return "pieceRed"
+        }
+        return "piece";
+      },
       init() {
+        this.calcnow = 0;
+
         this.log = [];
         this.prefQueue(0, parseInt(this.size), []);
       },
@@ -82,7 +89,7 @@
       },
       calc() {
         this.calcnow = 0;
-        this.queue(0, this.size, []);
+        this.queue(0, parseInt(this.size), []);
       },
       queue(now, length, arr) {
         if (now == length) {
@@ -96,7 +103,6 @@
         }
       },
       prefQueue(now, length, arr) {
-
         if (now == length) {
           let data = {
             calcCount: this.calcnow,
@@ -134,7 +140,26 @@
             arr[i] = 0;
           }
           this.pieces = arr;
+          this.tempNow = now;
           throw "结束！";
+        }
+        if (now == 0) {
+          return true;
+        }
+        for (let i = 0; i < now ; i++) {
+          for (let j = i + 1; j <= now; j++) {
+            if (arr[i] == arr[j] || Math.abs(arr[i] - arr[j]) == j - i) {
+              return false;
+            }
+          }
+        }
+        return true;
+      },
+      judageNotError(now, arr) {
+        if (this.count == this.calcnow) {
+          for (let i = now + 1; i < this.size; i++) {
+            arr[i] = 0;
+          }
         }
         if (now == 0) {
           return true;
@@ -171,5 +196,14 @@
     height: 80%;
     width: 80%;
     background: black;
+  }
+  .pieceRed{
+    position: relative;
+    top: 10%;
+    left: 10%;
+    border-radius: 50px;
+    height: 80%;
+    width: 80%;
+    background: red;
   }
 </style>
